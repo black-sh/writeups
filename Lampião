@@ -1,6 +1,6 @@
 1. First thing to do is to fire up nmap against Lampião VM (you can use options -sV -O -A for more enumeration)
 
-# nmap -p 192.168.95.133
+# nmap -p- 192.168.95.133
 
 Starting Nmap 7.60 ( https://nmap.org ) at 2018-08-01 22:15 CEST
 Nmap scan report for 192.168.95.133
