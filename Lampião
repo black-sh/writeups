@@ -60,7 +60,7 @@ No result was found. So, i tried to see what is running on port 1898 using the w
 
 [+] Scan finished (0:00:24.141079 elapsed)
 
-Applications devloped with drupal, prior to 7.58, is vulnerable to CVE-2018-7600 which allow a remote attacker to execute arbitrary code because of an issue affecting multiple subsystems with default or common module configurations. 
+Applications devloped with drupal, prior to 7.58, are vulnerable to CVE-2018-7600 which allow a remote attacker to execute arbitrary code because of an issue affecting multiple subsystems with default or common module configurations. 
 The links below contain the exploit scripts of this vulnerability: 
 
  ** https://www.exploit-db.com/exploits/44449/
