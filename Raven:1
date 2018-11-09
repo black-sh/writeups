@@ -48,7 +48,7 @@ HOP RTT     ADDRESS
 1   0.43 ms 192.168.58.145
 
 2. The web server is not exposed to severe vulnerabilties as shown below 
-(Expect the existiong of virtual host configuration "raven.local"):
+(Expect the existing of virtual host configuration "raven.local"):
 
 # nikto -h 192.168.58.145
 - Nikto v2.1.6
