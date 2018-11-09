@@ -1,14 +1,14 @@
 ************************************************************************************************************************
 ************************************************************************************************************************ 
-**																													                                                          **
-** Before diving into Raven VM, let me remind you that this machine has 4 flags and 2 way to get an root access. 	    ** 
-** This write-up will discuss the steps that I followed to compromise this vulnerable machine. 	       				        **
-** 										 	  																		                                                        ** 
+**														      **														                                                          **
+** Before diving into Raven VM, let me remind you that this machine has 4 flags and 2 way to get an root access.      ** 
+** This write-up will discuss the steps that I followed to compromise this vulnerable machine.=                       **
+** 										 	  			      **														                                                        ** 
 ************************************************************************************************************************
 ************************************************************************************************************************
 
 ===============================
-|| 		Enumeration			       ||
+|| 	   Enumeration       ||
 ===============================
 
 1. I fired up nmap against Raven VM to look for open ports by doing :
@@ -120,7 +120,7 @@ Let's browse the web application :
 [ ]	travis.phpunit.xml.dist	2018-08-13 07:56 	1.0K	 
 
 ========================================
-|| 		 VA & Gaining access		  ||
+||        VA & Gaining access	      ||
 ========================================
 
 3. I thought, based on information collected so far that, that the web application is vulnerable to CVE-2016-10033 
@@ -195,7 +195,7 @@ Next, I used web_delivery exploit on metasploit to have a low privileged access 
 flag4{715dea6c055b9fe3337544932f2941ce}
 
 ========================================
-|| 		 Privilge escalation		  ||
+||  	   Privilge escalation        ||
 ========================================
 
 5. Since the exploit scripts provided by LinEnum.sh were not effective, the potential exploit was UDF injection since mysql version is 5.5.60 (https://www.exploit-db.com/exploits/1518/). Note, you need to compile the C code on your box not Raven.
