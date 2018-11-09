@@ -123,7 +123,7 @@ Let's browse the web application :
 ||        VA & Gaining access	      ||
 ========================================
 
-3. I thought, based on information collected so far that, that the web application is vulnerable to CVE-2016-10033 
+3. I thought, based on the information collected so far, that the web application is vulnerable to CVE-2016-10033 
 but mail.php was not found according to the following response header :
 
 HTTP/1.1 404 Not Found
@@ -146,7 +146,7 @@ Content-Type: text/html; charset=iso-8859-1
 4. I got stuck at this point after trying to compromise the blog http://raven.local/wordpress/ 
 (Vulnerability assement, password cracking) until I ran acunitix VS against the web application 
 and it gave me a valuable information : Existing of Backup file contact.zip
-Afer downloading the  existing file, this code snippet shows that the web app is actually affected with CVE-2016-10033 : 
+Afer downloading the existing file, this code snippet shows that the web app is actually affected by CVE-2016-10033 : 
 <?php
 				if (isset($_REQUEST['action'])){
 					$name=$_REQUEST['name'];
