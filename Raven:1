@@ -200,9 +200,10 @@ flag4{715dea6c055b9fe3337544932f2941ce}
 ||  	   Privilge escalation        ||
 ========================================
 
-5. Since the exploit scripts provided by LinEnum.sh were not effective, 
-I found a potential exploit which is Mysql UDF injection. 
-Note tha mysql version is 5.5.60 (https://www.exploit-db.com/exploits/1518/) and you need to compile the C code on your box not Raven.
+5. Since the exploit scripts provided by linux-exploit-suggester.sh were not effective, 
+Mysql UDF was the potential exploit for privilege escalation since the mysql version is 5.5.60 
+(https://www.exploit-db.com/exploits/1518/). 
+Note that you need to compile the C code on your box not Raven.
 
 mysql> use mysql;
 use mysql;
