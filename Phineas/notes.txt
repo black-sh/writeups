@@ -114,11 +114,11 @@ c2Vpc2VtcHJlbmVsbWlvY3VvcmVtYW1tYQ
 
 ======Privelege Escalation (2nd Flag)===========
 
-I run Pinleas nothing intersting found and pspy64s shows there is flask server running 
+I run linpeas nothing intersting found and pspy64s shows there is flask server running 
 
 2021/04/10 02:45:45 CMD: UID=0    PID=1170   | /bin/bash /root/run_flask.sh 
 
-run_flash.sh is run by root and port listen to is 5000 as it was predicted here :
+** run_flash.sh is run by root and port listen to is 5000 as it was predicted here :
 
 [anna@phineas ~]$ netstat -lnp | grep LISTEN
 (No info could be read for "-p": geteuid()=1001 but you should be root.)
@@ -132,7 +132,7 @@ tcp6       0      0 :::80                   :::*                    LISTEN      
 tcp6       0      0 :::22                   :::*                    LISTEN      -                   
 tcp6       0      0 ::1:631                 :::*                    LISTEN      -   
 
-Under directory web, the app.py shows that the app is vulnerable to python deserialization vulnerability 
+** Under directory web, the app.py shows that the app is vulnerable to python deserialization vulnerability 
 
 [anna@phineas ~]$ ls
 Desktop  Documents  Downloads  Music  Pictures  Public  result.txt  Templates  Videos  web
@@ -157,7 +157,7 @@ def heaven():
     pickle.loads(data)
     return '', 204
 
-To access the web app I had to create SSH Tunneling from my attacking machine 
+** To access the web app I had to create SSH Tunneling from my attacking machine 
 
 root@black-sh:~/Vulnhub/Phineas# ssh -L 5000:localhost:5000 anna@192.168.15.154
 anna@192.168.15.154's password: 
