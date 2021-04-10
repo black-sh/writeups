@@ -1,0 +1,4 @@
+/assets               (Status: 301) [Size: 247] [--> http://192.168.15.154/structure/assets/]
+/index.php            (Status: 200) [Size: 9288]
+/robots.txt           (Status: 200) [Size: 30]
+/fuel                 (Status: 301) [Size: 245] [--> http://192.168.15.154/structure/fuel/]
