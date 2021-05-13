@@ -1,0 +1,324 @@
+_______________________________________________________________
+         __          _______   _____
+         \ \        / /  __ \ / ____|
+          \ \  /\  / /| |__) | (___   ___  __ _ _ __ ®
+           \ \/  \/ / |  ___/ \___ \ / __|/ _` | '_ \
+            \  /\  /  | |     ____) | (__| (_| | | | |
+             \/  \/   |_|    |_____/ \___|\__,_|_| |_|
+
+         WordPress Security Scanner by the WPScan Team
+                         Version 3.8.17
+       Sponsored by Automattic - https://automattic.com/
+       @_WPScan_, @ethicalhack3r, @erwan_lr, @firefart
+_______________________________________________________________
+
+[32m[+][0m URL: http://192.168.1.137/wp/ [192.168.1.137]
+[32m[+][0m Started: Thu May 13 03:20:26 2021
+
+Interesting Finding(s):
+
+[32m[+][0m Headers
+ | Interesting Entry: Server: Apache/2.4.46 (Ubuntu)
+ | Found By: Headers (Passive Detection)
+ | Confidence: 100%
+
+[32m[+][0m XML-RPC seems to be enabled: http://192.168.1.137/wp/xmlrpc.php
+ | Found By: Direct Access (Aggressive Detection)
+ | Confidence: 100%
+ | References:
+ |  - http://codex.wordpress.org/XML-RPC_Pingback_API
+ |  - https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_ghost_scanner/
+ |  - https://www.rapid7.com/db/modules/auxiliary/dos/http/wordpress_xmlrpc_dos/
+ |  - https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_xmlrpc_login/
+ |  - https://www.rapid7.com/db/modules/auxiliary/scanner/http/wordpress_pingback_access/
+
+[32m[+][0m WordPress readme found: http://192.168.1.137/wp/readme.html
+ | Found By: Direct Access (Aggressive Detection)
+ | Confidence: 100%
+
+[32m[+][0m Upload directory has listing enabled: http://192.168.1.137/wp/wp-content/uploads/
+ | Found By: Direct Access (Aggressive Detection)
+ | Confidence: 100%
+
+[32m[+][0m The external WP-Cron seems to be enabled: http://192.168.1.137/wp/wp-cron.php
+ | Found By: Direct Access (Aggressive Detection)
+ | Confidence: 60%
+ | References:
+ |  - https://www.iplocation.net/defend-wordpress-from-ddos
+ |  - https://github.com/wpscanteam/wpscan/issues/1299
+
+[32m[+][0m WordPress version 5.7.1 identified (Latest, released on 2021-04-15).
+ | Found By: Unique Fingerprinting (Aggressive Detection)
+ |  - http://192.168.1.137/wp/wp-admin/css/forms-rtl.min.css md5sum is 07d5924d77121b1d47d7eb32e078cd9d
+
+[32m[+][0m WordPress theme in use: twentytwentyone
+ | Location: http://192.168.1.137/wp/wp-content/themes/twentytwentyone/
+ | Latest Version: 1.3 (up to date)
+ | Last Updated: 2021-04-27T00:00:00.000Z
+ | Readme: http://192.168.1.137/wp/wp-content/themes/twentytwentyone/readme.txt
+ | Style URL: http://192.168.1.137/wp/wp-content/themes/twentytwentyone/style.css?ver=1.3
+ | Style Name: Twenty Twenty-One
+ | Style URI: https://wordpress.org/themes/twentytwentyone/
+ | Description: Twenty Twenty-One is a blank canvas for your ideas and it makes the block editor your best brush. Wi...
+ | Author: the WordPress team
+ | Author URI: https://wordpress.org/
+ |
+ | Found By: Css Style In Homepage (Passive Detection)
+ |
+ | Version: 1.3 (80% confidence)
+ | Found By: Style (Passive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentytwentyone/style.css?ver=1.3, Match: 'Version: 1.3'
+
+
+[34m[i][0m Plugin(s) Identified:
+
+[32m[+][0m gracemedia-media-player
+ | Location: http://192.168.1.137/wp/wp-content/plugins/gracemedia-media-player/
+ | Latest Version: 1.0 (up to date)
+ | Last Updated: 2013-07-21T15:09:00.000Z
+ | Readme: http://192.168.1.137/wp/wp-content/plugins/gracemedia-media-player/readme.txt
+ | [31m[!][0m Directory listing is enabled
+ |
+ | Found By: Urls In Homepage (Passive Detection)
+ | Confirmed By: Known Locations (Aggressive Detection)
+ |  - http://192.168.1.137/wp/wp-content/plugins/gracemedia-media-player/, status: 200
+ |
+ | Version: 1.0 (100% confidence)
+ | Found By: Readme - Stable Tag (Aggressive Detection)
+ |  - http://192.168.1.137/wp/wp-content/plugins/gracemedia-media-player/readme.txt
+ | Confirmed By: Readme - ChangeLog Section (Aggressive Detection)
+ |  - http://192.168.1.137/wp/wp-content/plugins/gracemedia-media-player/readme.txt
+
+
+[34m[i][0m Theme(s) Identified:
+
+[32m[+][0m twentyeleven
+ | Location: http://192.168.1.137/wp/wp-content/themes/twentyeleven/
+ | Latest Version: 3.7 (up to date)
+ | Last Updated: 2021-03-09T00:00:00.000Z
+ | Readme: http://192.168.1.137/wp/wp-content/themes/twentyeleven/readme.txt
+ | Style URL: http://192.168.1.137/wp/wp-content/themes/twentyeleven/style.css
+ | Style Name: Twenty Eleven
+ | Style URI: https://wordpress.org/themes/twentyeleven/
+ | Description: The 2011 theme for WordPress is sophisticated, lightweight, and adaptable. Make it yours with a cust...
+ | Author: the WordPress team
+ | Author URI: https://wordpress.org/
+ |
+ | Found By: Known Locations (Aggressive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentyeleven/, status: 500
+ |
+ | Version: 3.7 (80% confidence)
+ | Found By: Style (Passive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentyeleven/style.css, Match: 'Version: 3.7'
+
+[32m[+][0m twentyfifteen
+ | Location: http://192.168.1.137/wp/wp-content/themes/twentyfifteen/
+ | Latest Version: 2.9 (up to date)
+ | Last Updated: 2021-03-09T00:00:00.000Z
+ | Readme: http://192.168.1.137/wp/wp-content/themes/twentyfifteen/readme.txt
+ | Style URL: http://192.168.1.137/wp/wp-content/themes/twentyfifteen/style.css
+ | Style Name: Twenty Fifteen
+ | Style URI: https://wordpress.org/themes/twentyfifteen/
+ | Description: Our 2015 default theme is clean, blog-focused, and designed for clarity. Twenty Fifteen's simple, st...
+ | Author: the WordPress team
+ | Author URI: https://wordpress.org/
+ |
+ | Found By: Known Locations (Aggressive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentyfifteen/, status: 500
+ |
+ | Version: 2.9 (80% confidence)
+ | Found By: Style (Passive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentyfifteen/style.css, Match: 'Version: 2.9'
+
+[32m[+][0m twentyfourteen
+ | Location: http://192.168.1.137/wp/wp-content/themes/twentyfourteen/
+ | Latest Version: 3.1 (up to date)
+ | Last Updated: 2021-03-09T00:00:00.000Z
+ | Readme: http://192.168.1.137/wp/wp-content/themes/twentyfourteen/readme.txt
+ | Style URL: http://192.168.1.137/wp/wp-content/themes/twentyfourteen/style.css
+ | Style Name: Twenty Fourteen
+ | Style URI: https://wordpress.org/themes/twentyfourteen/
+ | Description: In 2014, our default theme lets you create a responsive magazine website with a sleek, modern design...
+ | Author: the WordPress team
+ | Author URI: https://wordpress.org/
+ |
+ | Found By: Known Locations (Aggressive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentyfourteen/, status: 500
+ |
+ | Version: 3.1 (80% confidence)
+ | Found By: Style (Passive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentyfourteen/style.css, Match: 'Version: 3.1'
+
+[32m[+][0m twentynineteen
+ | Location: http://192.168.1.137/wp/wp-content/themes/twentynineteen/
+ | Latest Version: 2.0 (up to date)
+ | Last Updated: 2021-03-09T00:00:00.000Z
+ | Readme: http://192.168.1.137/wp/wp-content/themes/twentynineteen/readme.txt
+ | Style URL: http://192.168.1.137/wp/wp-content/themes/twentynineteen/style.css
+ | Style Name: Twenty Nineteen
+ | Style URI: https://wordpress.org/themes/twentynineteen/
+ | Description: Our 2019 default theme is designed to show off the power of the block editor. It features custom sty...
+ | Author: the WordPress team
+ | Author URI: https://wordpress.org/
+ |
+ | Found By: Known Locations (Aggressive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentynineteen/, status: 500
+ |
+ | Version: 2.0 (80% confidence)
+ | Found By: Style (Passive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentynineteen/style.css, Match: 'Version: 2.0'
+
+[32m[+][0m twentyseventeen
+ | Location: http://192.168.1.137/wp/wp-content/themes/twentyseventeen/
+ | Latest Version: 2.7 (up to date)
+ | Last Updated: 2021-04-27T00:00:00.000Z
+ | Readme: http://192.168.1.137/wp/wp-content/themes/twentyseventeen/readme.txt
+ | Style URL: http://192.168.1.137/wp/wp-content/themes/twentyseventeen/style.css
+ | Style Name: Twenty Seventeen
+ | Style URI: https://wordpress.org/themes/twentyseventeen/
+ | Description: Twenty Seventeen brings your site to life with header video and immersive featured images. With a fo...
+ | Author: the WordPress team
+ | Author URI: https://wordpress.org/
+ |
+ | Found By: Known Locations (Aggressive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentyseventeen/, status: 500
+ |
+ | Version: 2.7 (80% confidence)
+ | Found By: Style (Passive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentyseventeen/style.css, Match: 'Version: 2.7'
+
+[32m[+][0m twentysixteen
+ | Location: http://192.168.1.137/wp/wp-content/themes/twentysixteen/
+ | Latest Version: 2.4 (up to date)
+ | Last Updated: 2021-03-09T00:00:00.000Z
+ | Readme: http://192.168.1.137/wp/wp-content/themes/twentysixteen/readme.txt
+ | Style URL: http://192.168.1.137/wp/wp-content/themes/twentysixteen/style.css
+ | Style Name: Twenty Sixteen
+ | Style URI: https://wordpress.org/themes/twentysixteen/
+ | Description: Twenty Sixteen is a modernized take on an ever-popular WordPress layout — the horizontal masthead ...
+ | Author: the WordPress team
+ | Author URI: https://wordpress.org/
+ |
+ | Found By: Known Locations (Aggressive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentysixteen/, status: 500
+ |
+ | Version: 2.4 (80% confidence)
+ | Found By: Style (Passive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentysixteen/style.css, Match: 'Version: 2.4'
+
+[32m[+][0m twentyten
+ | Location: http://192.168.1.137/wp/wp-content/themes/twentyten/
+ | Latest Version: 3.3 (up to date)
+ | Last Updated: 2021-03-09T00:00:00.000Z
+ | Readme: http://192.168.1.137/wp/wp-content/themes/twentyten/readme.txt
+ | Style URL: http://192.168.1.137/wp/wp-content/themes/twentyten/style.css
+ | Style Name: Twenty Ten
+ | Style URI: https://wordpress.org/themes/twentyten/
+ | Description: The 2010 theme for WordPress is stylish, customizable, simple, and readable -- make it yours with a ...
+ | Author: the WordPress team
+ | Author URI: https://wordpress.org/
+ |
+ | Found By: Known Locations (Aggressive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentyten/, status: 500
+ |
+ | Version: 3.3 (80% confidence)
+ | Found By: Style (Passive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentyten/style.css, Match: 'Version: 3.3'
+
+[32m[+][0m twentythirteen
+ | Location: http://192.168.1.137/wp/wp-content/themes/twentythirteen/
+ | Latest Version: 3.3 (up to date)
+ | Last Updated: 2021-03-09T00:00:00.000Z
+ | Readme: http://192.168.1.137/wp/wp-content/themes/twentythirteen/readme.txt
+ | Style URL: http://192.168.1.137/wp/wp-content/themes/twentythirteen/style.css
+ | Style Name: Twenty Thirteen
+ | Style URI: https://wordpress.org/themes/twentythirteen/
+ | Description: The 2013 theme for WordPress takes us back to the blog, featuring a full range of post formats, each...
+ | Author: the WordPress team
+ | Author URI: https://wordpress.org/
+ |
+ | Found By: Known Locations (Aggressive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentythirteen/, status: 500
+ |
+ | Version: 3.3 (80% confidence)
+ | Found By: Style (Passive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentythirteen/style.css, Match: 'Version: 3.3'
+
+[32m[+][0m twentytwelve
+ | Location: http://192.168.1.137/wp/wp-content/themes/twentytwelve/
+ | Latest Version: 3.3 (up to date)
+ | Last Updated: 2020-12-09T00:00:00.000Z
+ | Readme: http://192.168.1.137/wp/wp-content/themes/twentytwelve/readme.txt
+ | Style URL: http://192.168.1.137/wp/wp-content/themes/twentytwelve/style.css
+ | Style Name: Twenty Twelve
+ | Style URI: https://wordpress.org/themes/twentytwelve/
+ | Description: The 2012 theme for WordPress is a fully responsive theme that looks great on any device. Features in...
+ | Author: the WordPress team
+ | Author URI: https://wordpress.org/
+ |
+ | Found By: Known Locations (Aggressive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentytwelve/, status: 500
+ |
+ | Version: 3.3 (80% confidence)
+ | Found By: Style (Passive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentytwelve/style.css, Match: 'Version: 3.3'
+
+[32m[+][0m twentytwenty
+ | Location: http://192.168.1.137/wp/wp-content/themes/twentytwenty/
+ | Latest Version: 1.7 (up to date)
+ | Last Updated: 2021-03-09T00:00:00.000Z
+ | Readme: http://192.168.1.137/wp/wp-content/themes/twentytwenty/readme.txt
+ | Style URL: http://192.168.1.137/wp/wp-content/themes/twentytwenty/style.css
+ | Style Name: Twenty Twenty
+ | Style URI: https://wordpress.org/themes/twentytwenty/
+ | Description: Our default theme for 2020 is designed to take full advantage of the flexibility of the block editor...
+ | Author: the WordPress team
+ | Author URI: https://wordpress.org/
+ |
+ | Found By: Known Locations (Aggressive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentytwenty/, status: 500
+ |
+ | Version: 1.7 (80% confidence)
+ | Found By: Style (Passive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentytwenty/style.css, Match: 'Version: 1.7'
+
+[32m[+][0m twentytwentyone
+ | Location: http://192.168.1.137/wp/wp-content/themes/twentytwentyone/
+ | Latest Version: 1.3 (up to date)
+ | Last Updated: 2021-04-27T00:00:00.000Z
+ | Readme: http://192.168.1.137/wp/wp-content/themes/twentytwentyone/readme.txt
+ | Style URL: http://192.168.1.137/wp/wp-content/themes/twentytwentyone/style.css
+ | Style Name: Twenty Twenty-One
+ | Style URI: https://wordpress.org/themes/twentytwentyone/
+ | Description: Twenty Twenty-One is a blank canvas for your ideas and it makes the block editor your best brush. Wi...
+ | Author: the WordPress team
+ | Author URI: https://wordpress.org/
+ |
+ | Found By: Urls In Homepage (Passive Detection)
+ | Confirmed By: Known Locations (Aggressive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentytwentyone/, status: 500
+ |
+ | Version: 1.3 (80% confidence)
+ | Found By: Style (Passive Detection)
+ |  - http://192.168.1.137/wp/wp-content/themes/twentytwentyone/style.css, Match: 'Version: 1.3'
+
+
+[34m[i][0m User(s) Identified:
+
+[32m[+][0m admin
+ | Found By: Author Posts - Author Pattern (Passive Detection)
+ | Confirmed By:
+ |  Rss Generator (Passive Detection)
+ |  Author Id Brute Forcing - Author Pattern (Aggressive Detection)
+ |  Login Error Messages (Aggressive Detection)
+
+[33m[!][0m No WPScan API Token given, as a result vulnerability data has not been output.
+[33m[!][0m You can get a free API token with 25 daily requests by registering at https://wpscan.com/register
+
+[32m[+][0m Finished: Thu May 13 03:26:32 2021
+[32m[+][0m Requests Done: 115914
+[32m[+][0m Cached Requests: 41
+[32m[+][0m Data Sent: 31.775 MB
+[32m[+][0m Data Received: 21.119 MB
+[32m[+][0m Memory used: 452.305 MB
+[32m[+][0m Elapsed time: 00:06:05

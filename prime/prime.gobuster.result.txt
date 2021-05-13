@@ -1,0 +1,7 @@
+/images               (Status: 301) [Size: 315] [--> http://192.168.1.137/images/]
+/index.html           (Status: 200) [Size: 5761]
+/css                  (Status: 301) [Size: 312] [--> http://192.168.1.137/css/]
+/server               (Status: 301) [Size: 315] [--> http://192.168.1.137/server/]
+/wp                   (Status: 301) [Size: 311] [--> http://192.168.1.137/wp/]
+/javascript           (Status: 301) [Size: 319] [--> http://192.168.1.137/javascript/]
+/server-status        (Status: 403) [Size: 278]

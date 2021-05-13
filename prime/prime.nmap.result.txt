@@ -1,0 +1,36 @@
+# Nmap 7.91 scan initiated Thu May 13 01:15:58 2021 as: nmap -p- -A -T4 -oN prime.nmap.result.txt 192.168.1.137
+Nmap scan report for 192.168.1.137
+Host is up (0.0017s latency).
+Not shown: 65530 closed ports
+PORT      STATE SERVICE     VERSION
+22/tcp    open  ssh         OpenSSH 8.4p1 Ubuntu 5ubuntu1 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey: 
+|   3072 0a:16:3f:c8:1a:7d:ff:f5:7a:66:05:63:76:7c:5a:95 (RSA)
+|   256 7f:47:44:cc:d1:c4:b7:54:de:4f:27:f2:39:38:ff:6e (ECDSA)
+|_  256 f5:d3:36:44:43:40:3d:11:9b:d1:a6:24:9f:99:93:f7 (ED25519)
+80/tcp    open  http        Apache httpd 2.4.46 ((Ubuntu))
+|_http-server-header: Apache/2.4.46 (Ubuntu)
+|_http-title: HackerCTF
+139/tcp   open  netbios-ssn Samba smbd 4.6.2
+445/tcp   open  netbios-ssn Samba smbd 4.6.2
+10123/tcp open  http        SimpleHTTPServer 0.6 (Python 3.9.4)
+|_http-server-header: SimpleHTTP/0.6 Python/3.9.4
+|_http-title: Directory listing for /
+MAC Address: 00:0C:29:B6:65:E5 (VMware)
+Device type: general purpose
+Running: Linux 4.X|5.X
+OS CPE: cpe:/o:linux:linux_kernel:4 cpe:/o:linux:linux_kernel:5
+OS details: Linux 4.15 - 5.6
+Network Distance: 1 hop
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Host script results:
+|_nbstat: NetBIOS name: HACKERCTFLAB, NetBIOS user: <unknown>, NetBIOS MAC: <unknown> (unknown)
+|_smb2-time: Protocol negotiation failed (SMB2)
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   1.75 ms 192.168.1.137
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Thu May 13 01:17:09 2021 -- 1 IP address (1 host up) scanned in 71.31 seconds
