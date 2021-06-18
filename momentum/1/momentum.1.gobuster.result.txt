@@ -1,0 +1,5 @@
+/img                  (Status: 301) [Size: 314] [--> http://192.168.15.169/img/]
+/css                  (Status: 301) [Size: 314] [--> http://192.168.15.169/css/]
+/js                   (Status: 301) [Size: 313] [--> http://192.168.15.169/js/]
+/manual               (Status: 301) [Size: 317] [--> http://192.168.15.169/manual/]
+/server-status        (Status: 403) [Size: 279]

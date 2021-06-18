@@ -1,0 +1,36 @@
+# Nmap 7.91 scan initiated Fri Jun 18 12:10:02 2021 as: nmap -p- -A -T4 -oN momentum.2.nmap.result.txt 192.168.159.137
+Nmap scan report for 192.168.159.137
+Host is up (0.00044s latency).
+Not shown: 65533 closed ports
+PORT   STATE SERVICE VERSION
+22/tcp open  ssh     OpenSSH 7.9p1 Debian 10+deb10u2 (protocol 2.0)
+| ssh-hostkey: 
+|   2048 02:32:8e:5b:27:a8:ea:f2:fe:11:db:2f:57:f4:11:7e (RSA)
+|   256 74:35:c8:fb:96:c1:9f:a0:dc:73:6c:cd:83:52:bf:b7 (ECDSA)
+|_  256 fc:4a:70:fb:b9:7d:32:89:35:0a:45:3d:d9:8b:c5:95 (ED25519)
+80/tcp open  http    Apache httpd 2.4.38 ((Debian))
+|_http-server-header: Apache/2.4.38 (Debian)
+|_http-title: Momentum 2 | Index 
+MAC Address: 00:0C:29:C7:06:5D (VMware)
+No exact OS matches for host (If you know what OS is running on it, see https://nmap.org/submit/ ).
+TCP/IP fingerprint:
+OS:SCAN(V=7.91%E=4%D=6/18%OT=22%CT=1%CU=37736%PV=Y%DS=1%DC=D%G=Y%M=000C29%T
+OS:M=60CCC56E%P=x86_64-pc-linux-gnu)SEQ(SP=106%GCD=1%ISR=10B%TI=Z%CI=Z%II=I
+OS:%TS=A)OPS(O1=M5B4ST11NW6%O2=M5B4ST11NW6%O3=M5B4NNT11NW6%O4=M5B4ST11NW6%O
+OS:5=M5B4ST11NW6%O6=M5B4ST11)WIN(W1=FE88%W2=FE88%W3=FE88%W4=FE88%W5=FE88%W6
+OS:=FE88)ECN(R=Y%DF=Y%T=40%W=FAF0%O=M5B4NNSNW6%CC=Y%Q=)T1(R=Y%DF=Y%T=40%S=O
+OS:%A=S+%F=AS%RD=0%Q=)T2(R=N)T3(R=N)T4(R=Y%DF=Y%T=40%W=0%S=A%A=Z%F=R%O=%RD=
+OS:0%Q=)T5(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)T6(R=Y%DF=Y%T=40%W=0%
+OS:S=A%A=Z%F=R%O=%RD=0%Q=)T7(R=Y%DF=Y%T=40%W=0%S=Z%A=S+%F=AR%O=%RD=0%Q=)U1(
+OS:R=Y%DF=N%T=40%IPL=164%UN=0%RIPL=G%RID=G%RIPCK=G%RUCK=G%RUD=G)IE(R=Y%DFI=
+OS:N%T=40%CD=S)
+
+Network Distance: 1 hop
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+TRACEROUTE
+HOP RTT     ADDRESS
+1   0.44 ms 192.168.159.137
+
+OS and Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+# Nmap done at Fri Jun 18 12:10:22 2021 -- 1 IP address (1 host up) scanned in 20.99 seconds

